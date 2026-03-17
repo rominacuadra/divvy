@@ -1,0 +1,58 @@
+.monthSel {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1.5rem;
+}
+.monthSel span {
+  font-size: 16px;
+  font-weight: 600;
+  min-width: 170px;
+  text-align: center;
+  text-transform: capitalize;
+}
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 1.5rem;
+}
+.metric {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+}
+.mLabel { font-size: 12px; color: var(--text2); margin-bottom: 4px; }
+.mValue { font-size: 20px; font-weight: 600; color: var(--accent); }
+
+.catGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 1.5rem;
+}
+.catHead { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.catName { font-size: 13px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.catGastado { font-size: 13px; color: var(--text2); }
+.catPresup { font-size: 12px; color: var(--text2); margin-top: 2px; }
+.progressBar { height: 6px; background: var(--bg4); border-radius: 3px; overflow: hidden; margin-top: 6px; }
+.progressFill { height: 100%; border-radius: 3px; transition: width 0.3s; }
+
+.chartHeader { display: flex; align-items: center; gap: 16px; margin-bottom: 8px; flex-wrap: wrap; }
+.legend { display: flex; gap: 12px; font-size: 12px; color: var(--text2); flex-wrap: wrap; }
+.legend span { display: flex; align-items: center; gap: 4px; }
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 2px; }
+.chartWrap {
+  position: relative;
+  width: 100%;
+  height: 280px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+@media (max-width: 540px) {
+  .metrics { grid-template-columns: 1fr 1fr; }
+}

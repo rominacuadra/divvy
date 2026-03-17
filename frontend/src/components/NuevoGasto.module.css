@@ -1,0 +1,66 @@
+.toggle {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.opt {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--text2);
+  background: var(--bg3);
+  transition: all 0.1s;
+}
+
+.opt:hover { background: var(--bg4); color: var(--text); }
+
+.selected {
+  border-color: var(--accent);
+  background: var(--accent2);
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.swRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  font-size: 13px;
+}
+
+.montoReal {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--text2);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.iconGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.iconOpt {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  background: var(--bg3);
+  transition: border-color 0.1s, background 0.1s;
+}
+
+.iconOpt:hover { background: var(--bg4); }
+.iconSel { border-color: var(--accent); background: var(--accent2); }

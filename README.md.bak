@@ -1,0 +1,242 @@
+# Mis Gastos
+
+App de control de gastos personales — FastAPI + PostgreSQL + React, deployada en Railway desde GitHub.
+
+## Stack
+
+| Capa | Tecnología |
+|---|---|
+| Frontend | React 18 + Vite + Chart.js |
+| Backend | FastAPI (Python 3.12) |
+| Base de datos | PostgreSQL 16 |
+| Deploy | Railway (desde GitHub) |
+
+---
+
+## Estructura del repo
+
+```
+mis-gastos/
+├── backend/            ← Servicio 1 en Railway
+│   ├── main.py
+│   ├── database.py
+│   ├── models.py
+│   ├── schemas.py
+│   ├── requirements.txt
+│   ├── Dockerfile
+│   ├── railway.json    ← Railway lee esto automáticamente
+│   ├── .env.example    ← Copiá a .env para desarrollo local
+│   └── routes/
+│       ├── categorias.py
+│       ├── medios.py
+│       └── gastos.py
+├── frontend/           ← Servicio 2 en Railway
+│   ├── src/
+│   ├── Dockerfile.prod
+│   ├── nginx.conf
+│   ├── railway.json    ← Railway lee esto automáticamente
+│   ├── .env.example    ← Copiá a .env.local para desarrollo local
+│   └── package.json
+├── docker-compose.yml  ← Solo para desarrollo local
+├── .gitignore
+└── README.md
+```
+
+---
+
+## Flujo de trabajo con ramas
+
+El repo tiene dos ramas principales:
+
+| Rama | Propósito |
+|---|---|
+| `main` | Producción — Railway deploya desde acá |
+| `develop` | Desarrollo diario — nunca va directo a Railway |
+
+### Trabajo diario
+
+```bash
+# Siempre trabajar en develop
+git checkout develop
+
+# Hacer cambios, probar local con Docker...
+git add .
+git commit -m "feat: nueva funcionalidad"
+git push origin develop   # no dispara Railway
+```
+
+### Pasar cambios a producción
+
+```bash
+git checkout main
+git merge develop
+git push origin main      # ← Railway detecta esto y redeploya
+git checkout develop      # volver a develop para seguir trabajando
+```
+
+### Configurar Railway para que solo escuche `main`
+
+En Railway, para cada servicio (backend y frontend):
+1. Click en el servicio → tab **"Settings"**
+2. Sección **"Source"** → campo **"Branch"** → escribí `main`
+3. Railway ignorará pushes a `develop` y cualquier otra rama
+
+---
+
+## Trabajar desde cualquier máquina
+
+Podés clonar el repo, desarrollar local y pushear desde cualquier computadora. Los archivos `.env` **nunca se suben a GitHub** (están en `.gitignore`), así que cada máquina tiene su propia configuración local.
+
+### En una máquina nueva
+
+```bash
+# 1. Clonar el repo
+git clone https://github.com/TU_USUARIO/mis-gastos.git
+cd mis-gastos
+
+# 2. Crear los archivos de entorno locales
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env.local
+
+# Los archivos ya tienen los valores correctos para desarrollo local:
+# backend/.env         → DATABASE_URL=mysql+pymysql://root:root@localhost:3306/misgastos
+# frontend/.env.local  → VITE_API_URL=http://localhost:8000
+
+# 3. Levantar todo
+docker-compose up --build
+
+# 4. Abrir en el navegador
+# http://localhost:5173
+```
+
+### Configurar la rama de trabajo
+
+```bash
+# Si es la primera vez en esta máquina
+git checkout -b develop origin/develop
+
+# Si develop ya existe localmente
+git checkout develop
+git pull origin develop   # traer últimos cambios antes de empezar
+```
+
+---
+
+## Setup inicial en Railway (una sola vez)
+
+### Paso 1 — Subir el código a GitHub
+
+```bash
+cd mis-gastos
+git init
+git add .
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/TU_USUARIO/mis-gastos.git
+git push -u origin main
+
+# Crear rama develop
+git checkout -b develop
+git push -u origin develop
+```
+
+### Paso 2 — Crear el proyecto en Railway
+
+1. Entrá a [railway.app](https://railway.app) → **New Project**
+2. Elegí **"Empty project"**
+
+### Paso 3 — Agregar PostgreSQL
+
+1. Click **"+ New"** → **"Database"** → **"Add MySQL"**
+2. Click en el servicio MySQL → tab **"Variables"**
+3. Copiá el valor de `DATABASE_URL`
+
+### Paso 4 — Crear el servicio Backend
+
+1. Click **"+ New"** → **"GitHub Repo"** → seleccioná `mis-gastos`
+2. **Root Directory** → `backend`
+3. Click **"Deploy"**
+4. Tab **"Variables"** → **"+ New Variable"**:
+   ```
+   DATABASE_URL = <valor copiado del paso 3>
+   ```
+5. Tab **"Settings"** → **"Source"** → **Branch**: `main`
+6. Tab **"Settings"** → **"Networking"** → **"Generate Domain"** → copiá la URL, ej:
+   ```
+   https://mis-gastos-backend-production.up.railway.app
+   ```
+
+### Paso 5 — Crear el servicio Frontend
+
+1. Click **"+ New"** → **"GitHub Repo"** → seleccioná `mis-gastos`
+2. **Root Directory** → `frontend`
+3. Click **"Deploy"**
+4. Tab **"Variables"** → **"+ New Variable"**:
+   ```
+   VITE_API_URL = https://mis-gastos-backend-production.up.railway.app
+   ```
+   > Sin `/` al final. Usá la URL del backend del paso anterior.
+5. Tab **"Settings"** → **"Source"** → **Branch**: `main`
+6. **"Deployments"** → **"Redeploy"** (para que tome la variable)
+7. Tab **"Settings"** → **"Networking"** → **"Generate Domain"**
+
+¡Listo! La app queda en una URL pública accesible desde cualquier dispositivo.
+
+---
+
+## Desarrollo local
+
+```bash
+# Levantar todo
+docker-compose up --build
+
+# Solo el backend (si ya tenés PostgreSQL corriendo)
+docker-compose up backend
+
+# Ver logs en tiempo real
+docker-compose logs -f backend
+docker-compose logs -f frontend
+
+# Reiniciar un servicio
+docker-compose restart backend
+
+# Conectarse a la base de datos local
+docker-compose exec db mysql -uroot -proot misgastos
+
+# Detener todo
+docker-compose down
+
+# Detener y borrar la base de datos (cuidado)
+docker-compose down -v
+```
+
+### Acceder desde el celular (misma red WiFi)
+
+```bash
+# Mac/Linux
+ipconfig getifaddr en0
+
+# Windows — buscar "IPv4 Address" del adaptador WiFi
+ipconfig
+```
+
+Con Docker corriendo, abrí en el celular: `http://TU_IP:5173`
+
+Los datos son los mismos que en la laptop porque ambos usan el mismo PostgreSQL en Docker.
+
+---
+
+## Documentación de la API
+
+Con el backend corriendo: **http://localhost:8000/docs**
+
+---
+
+## Costo estimado en Railway
+
+| Servicio | ~$/mes |
+|---|---|
+| Backend (FastAPI) | $2 |
+| PostgreSQL | $1 |
+| Frontend (nginx) | $1 |
+| **Total** | **~$4** |

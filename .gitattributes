@@ -1,0 +1,10 @@
+# Forzar LF en todos los archivos de texto para evitar problemas en Windows con Docker
+* text=auto eol=lf
+
+# Archivos binarios - sin conversión
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.zip binary
