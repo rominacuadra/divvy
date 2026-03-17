@@ -62,12 +62,14 @@ divvy/
 │       ├── categorias.py
 │       └── medios.py
 └── frontend/
-    └── src/
-        ├── api/              ← API client (axios)
-        ├── components/       ← Reusable components
-        ├── pages/            ← Dashboard, Expenses, Categories, Payment Methods
-        ├── store.jsx         ← Global state (React Context)
-        └── utils.js          ← Helpers (formatting, CSV export)
+|   └── src/
+|       ├── api/              ← API client (axios)
+|       ├── components/       ← Reusable components
+|       ├── pages/            ← Dashboard, Expenses, Categories, Payment Methods
+|       ├── store.jsx         ← Global state (React Context)
+|       └── utils.js          ← Helpers (formatting, CSV export)
+├── screenshots/              ← App screenshots for README
+│   └── dashboard.png        
 ```
 
 ---
