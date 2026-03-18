@@ -24,7 +24,7 @@ function AppInner() {
     <div className={styles.app}>
       <div className={styles.header}>
         <div>
-          <h1 className={styles.title}>Mis Gastos</h1>
+          <h1 className={styles.title}>Divvy</h1>
           <p className={styles.subtitle}>Control financiero personal</p>
         </div>
         <button className="btn btn-primary" onClick={() => setShowNuevo(true)}>+ Nuevo gasto</button>

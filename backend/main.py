@@ -12,7 +12,7 @@ import uuid
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title="Mis Gastos API", version="1.0.0")
+app = FastAPI(title="Divvy API", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
