@@ -2,7 +2,7 @@
 
 Registrá tus gastos, dividí los costos, conservá las amistades 💸
 
-![Dashboard](./screenshots/dashboard.png)
+![Dashboard](./docs/screenshots/dashboard.png)
 
 ---
 
