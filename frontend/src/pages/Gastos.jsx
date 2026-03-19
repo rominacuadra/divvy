@@ -12,6 +12,25 @@ export default function Gastos() {
   const [fTipo, setFTipo] = useState('')
   const [fDesde, setFDesde] = useState('')
   const [fHasta, setFHasta] = useState('')
+  const [fechaError, setFechaError] = useState('')
+
+  const handleFDesde = (val) => {
+    setFDesde(val)
+    if (fHasta && val && val > fHasta) {
+      setFechaError('La fecha de inicio no puede ser mayor a la fecha de fin.')
+    } else {
+      setFechaError('')
+    }
+  }
+
+  const handleFHasta = (val) => {
+    setFHasta(val)
+    if (fDesde && val && val < fDesde) {
+      setFechaError('La fecha de fin no puede ser menor a la fecha de inicio.')
+    } else {
+      setFechaError('')
+    }
+  }
   const [showCSV, setShowCSV] = useState(false)
   const [csvMeses, setCsvMeses] = useState([])
   const [csvMes, setCsvMes] = useState('')
@@ -61,8 +80,14 @@ export default function Gastos() {
   return (
     <div>
       <div className={styles.filters}>
-        <input type="date" value={fDesde} onChange={e => setFDesde(e.target.value)} style={{width:'auto'}} />
-        <input type="date" value={fHasta} onChange={e => setFHasta(e.target.value)} style={{width:'auto'}} />
+      <div className={styles.filterGroup}>
+          <label className={styles.filterLabel}>Desde</label>
+          <input type="date" value={fDesde} onChange={e => handleFDesde(e.target.value)} style={{width:'auto', borderColor: fechaError ? 'var(--danger)' : ''}} />
+        </div>
+        <div className={styles.filterGroup}>
+          <label className={styles.filterLabel}>Hasta</label>
+          <input type="date" value={fHasta} onChange={e => handleFHasta(e.target.value)} style={{width:'auto', borderColor: fechaError ? 'var(--danger)' : ''}} />
+        </div>
         <select value={fCat} onChange={e => setFCat(e.target.value)} style={{width:'auto'}}>
           <option value="">Todas las categorías</option>
           {categorias.map(c => <option key={c.id} value={c.id}>{c.icono} {c.nombre}</option>)}
@@ -77,6 +102,9 @@ export default function Gastos() {
           <option value="compartido">Compartido</option>
         </select>
       </div>
+      {fechaError && (
+        <div style={{fontSize:12, color:'var(--danger)', marginBottom:8}}>{fechaError}</div>
+      )}
 
       <div style={{display:'flex', justifyContent:'flex-end', marginBottom:8}}>
         <button className="btn btn-sm" onClick={openCSV}>⬇ Descargar CSV</button>
