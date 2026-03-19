@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { useStore } from '../store'
-import { getMesesConDatos } from '../api'
+import { getMesesConDatos, deleteGasto } from '../api'
 import { fmt, fmtMon, getMonthName, toCSV } from '../utils'
+import NuevoGasto from '../components/NuevoGasto'
 import styles from './Gastos.module.css'
 
 export default function Gastos() {
-  const { gastos, categorias, medios, currentMonth, currentYear } = useStore()
+  const { gastos, categorias, medios, currentMonth, currentYear, refreshGastos } = useStore()
   const [fCat, setFCat] = useState('')
   const [fMedio, setFMedio] = useState('')
   const [fTipo, setFTipo] = useState('')
@@ -14,6 +15,8 @@ export default function Gastos() {
   const [showCSV, setShowCSV] = useState(false)
   const [csvMeses, setCsvMeses] = useState([])
   const [csvMes, setCsvMes] = useState('')
+  const [editando, setEditando] = useState(null)       // gasto que se está editando
+  const [eliminando, setEliminando] = useState(null)   // gasto pendiente de confirmar eliminación
 
   const filtered = gastos.filter(g => {
     if (fCat && g.categoria_id !== fCat) return false
@@ -46,6 +49,13 @@ export default function Gastos() {
     a.click()
     URL.revokeObjectURL(url)
     setShowCSV(false)
+  }
+
+  const handleEliminar = async () => {
+    if (!eliminando) return
+    await deleteGasto(eliminando.id)
+    refreshGastos()
+    setEliminando(null)
   }
 
   return (
@@ -81,7 +91,10 @@ export default function Gastos() {
             const medio = medios.find(m => m.id === g.medio_pago_id)
             return (
               <div key={g.id} className={styles.row}>
-                <div className={styles.icon}>{cat?.icono || '💰'}</div>
+                <div className={styles.iconWrap}>
+                  <div className={styles.icon}>{cat?.icono || '💰'}</div>
+                  <span className={styles.tooltip}>{cat?.nombre || 'Sin categoría'}</span>
+                </div>
                 <div className={styles.info}>
                   <div className={styles.desc}>{g.descripcion}</div>
                   <div className={styles.meta}>
@@ -98,13 +111,47 @@ export default function Gastos() {
                   </div>
                 </div>
                 <div className={styles.amount}>{fmtMon(g.monto, g.moneda)}</div>
+                <div className={styles.actions}>
+                  <button
+                    className="btn btn-sm"
+                    onClick={() => setEditando(g)}
+                  >Editar</button>
+                  <button
+                    className="btn btn-sm btn-danger"
+                    onClick={() => setEliminando(g)}
+                  >Eliminar</button>
+                </div>
               </div>
             )
           })}
         </div>
       )}
 
-      {/* CSV modal */}
+      {/* Modal editar gasto */}
+      {editando && (
+        <NuevoGasto
+          gasto={editando}
+          onClose={() => setEditando(null)}
+        />
+      )}
+
+      {/* Modal confirmar eliminación */}
+      {eliminando && (
+        <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.7)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:200}}>
+          <div className="card" style={{width:340}}>
+            <h3 style={{fontSize:15,fontWeight:600,marginBottom:'0.75rem'}}>Eliminar gasto</h3>
+            <p style={{fontSize:13,color:'var(--text2)',lineHeight:1.6}}>
+              ¿Estás segura de que querés eliminar <strong style={{color:'var(--text)'}}>{eliminando.descripcion}</strong>? Esta acción no se puede deshacer.
+            </p>
+            <div style={{display:'flex',gap:8,marginTop:'1.5rem'}}>
+              <button className="btn" style={{flex:1}} onClick={() => setEliminando(null)}>Cancelar</button>
+              <button className="btn btn-danger" style={{flex:1}} onClick={handleEliminar}>Eliminar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal CSV */}
       {showCSV && (
         <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.7)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:200}}>
           <div className="card" style={{width:320}}>

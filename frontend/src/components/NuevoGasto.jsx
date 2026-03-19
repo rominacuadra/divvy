@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import Modal from './Modal'
 import { useStore } from '../store'
-import { createGasto, createCategoria, createMedio, updateCategoria } from '../api'
+import { createGasto, updateGasto, createCategoria, createMedio, updateCategoria } from '../api'
 import { genId, fmt, fmtMon, ICONS } from '../utils'
 import styles from './NuevoGasto.module.css'
 
@@ -11,22 +11,26 @@ function FieldError({ msg }) {
   return msg ? <span className="field-error">{msg}</span> : null
 }
 
-export default function NuevoGasto({ onClose }) {
+// gasto: si viene con datos, es modo edición. Si es null, es modo creación.
+export default function NuevoGasto({ onClose, gasto = null }) {
   const { categorias, fetchCategorias, medios, fetchMedios, refreshGastos } = useStore()
+  const esEdicion = !!gasto
 
-  const [fecha, setFecha] = useState(new Date().toISOString().split('T')[0])
-  const [desc, setDesc] = useState('')
-  const [catId, setCatId] = useState('')
-  const [medioId, setMedioId] = useState('')
-  const [moneda, setMoneda] = useState('ARS')
-  const [montoRaw, setMontoRaw] = useState('')
-  const [tipo, setTipo] = useState('individual')
-  const [sw, setSw] = useState(false)
+  // En edición, el monto real que se muestra es el que está guardado.
+  // Si era compartido, el monto guardado YA es la mitad — lo mostramos tal cual.
+  const [fecha, setFecha] = useState(gasto?.fecha || new Date().toISOString().split('T')[0])
+  const [desc, setDesc] = useState(gasto?.descripcion || '')
+  const [catId, setCatId] = useState(gasto?.categoria_id || '')
+  const [medioId, setMedioId] = useState(gasto?.medio_pago_id || '')
+  const [moneda, setMoneda] = useState(gasto?.moneda || 'ARS')
+  const [montoRaw, setMontoRaw] = useState(gasto ? String(gasto.monto) : '')
+  const [tipo, setTipo] = useState(gasto?.tipo || 'individual')
+  const [sw, setSw] = useState(gasto?.splitwise || false)
   const [errors, setErrors] = useState({})
   const [saving, setSaving] = useState(false)
 
   // Sub-modal states
-  const [showNoCat, setShowNoCat] = useState(false)       // primera vez sin presupuesto
+  const [showNoCat, setShowNoCat] = useState(false)
   const [showNewCat, setShowNewCat] = useState(false)
   const [showNewMedio, setShowNewMedio] = useState(false)
   const [showEditPresup, setShowEditPresup] = useState(false)
@@ -59,21 +63,43 @@ export default function NuevoGasto({ onClose }) {
 
   const handleGuardar = async () => {
     if (!validate()) return
-    const monto = tipo === 'compartido' ? parseFloat(montoRaw) / 2 : parseFloat(montoRaw)
+    const monto = parseFloat(montoRaw)
+    const data = {
+      fecha,
+      descripcion: desc.trim(),
+      categoria_id: catId,
+      medio_pago_id: medioId,
+      moneda,
+      monto,
+      tipo,
+      splitwise: tipo === 'compartido' ? sw : null
+    }
+
+    if (esEdicion) {
+      // En edición no chequeamos presupuesto ni primera vez
+      await guardarGastoFinal(data)
+      return
+    }
+
+    // Solo en creación chequeamos si es primer gasto sin presupuesto
     const cat = categorias.find(c => c.id === catId)
-    const esElPrimero = true // backend no tiene este dato fácil, lo inferimos: si presupuesto=0
-    if (!cat.presupuesto || cat.presupuesto <= 0) {
-      setPendingGasto({ fecha, descripcion: desc.trim(), categoria_id: catId, medio_pago_id: medioId, moneda, monto, tipo, splitwise: tipo === 'compartido' ? sw : null })
+    const sinPresupuesto = !cat.presupuesto || cat.presupuesto <= 0
+    if (sinPresupuesto) {
+      setPendingGasto({ ...data, monto: tipo === 'compartido' ? monto / 2 : monto })
       setShowNoCat(true)
       return
     }
-    await guardarGasto({ fecha, descripcion: desc.trim(), categoria_id: catId, medio_pago_id: medioId, moneda, monto, tipo, splitwise: tipo === 'compartido' ? sw : null })
+    await guardarGastoFinal({ ...data, monto: tipo === 'compartido' ? monto / 2 : monto })
   }
 
-  const guardarGasto = async (data) => {
+  const guardarGastoFinal = async (data) => {
     setSaving(true)
     try {
-      await createGasto({ id: genId(), ...data })
+      if (esEdicion) {
+        await updateGasto(gasto.id, data)
+      } else {
+        await createGasto({ id: genId(), ...data })
+      }
       refreshGastos()
       onClose()
     } finally {
@@ -120,7 +146,8 @@ export default function NuevoGasto({ onClose }) {
     setShowNoCat(true)
   }
 
-  const montoCalculado = tipo === 'compartido' && parseFloat(montoRaw) > 0
+  // En edición el monto ya es el final (no se divide de nuevo)
+  const montoCalculado = !esEdicion && tipo === 'compartido' && parseFloat(montoRaw) > 0
     ? parseFloat(montoRaw) / 2
     : null
 
@@ -128,7 +155,7 @@ export default function NuevoGasto({ onClose }) {
 
   return (
     <>
-      <Modal title="Nuevo gasto" onClose={onClose}>
+      <Modal title={esEdicion ? 'Editar gasto' : 'Nuevo gasto'} onClose={onClose}>
         <div className="row2">
           <div>
             <label>Fecha</label>
@@ -187,7 +214,7 @@ export default function NuevoGasto({ onClose }) {
             </select>
           </div>
           <div>
-            <label>Monto total</label>
+            <label>{esEdicion ? 'Monto' : 'Monto total'}</label>
             <input type="number" value={montoRaw} onChange={e => { setMontoRaw(e.target.value); setErrors(p => ({...p, monto: undefined})) }} placeholder="0" min="0" />
             <FieldError msg={errors.monto} />
           </div>
@@ -199,15 +226,21 @@ export default function NuevoGasto({ onClose }) {
           </div>
         )}
 
+        {esEdicion && (
+          <div style={{fontSize:12, color:'var(--text3)', marginTop:8}}>
+            En edición el monto se guarda tal cual lo ingresás.
+          </div>
+        )}
+
         <div style={{display:'flex', gap:8, marginTop:'1.5rem'}}>
           <button className="btn" style={{flex:1}} onClick={onClose}>Cancelar</button>
           <button className="btn btn-primary" style={{flex:1}} onClick={handleGuardar} disabled={saving}>
-            {saving ? 'Guardando…' : 'Guardar'}
+            {saving ? 'Guardando…' : esEdicion ? 'Guardar cambios' : 'Guardar'}
           </button>
         </div>
       </Modal>
 
-      {/* Sub-modal: sin presupuesto */}
+      {/* Sub-modal: sin presupuesto (solo en creación) */}
       {showNoCat && pendingGasto && (
         <Modal title={`${catActual?.icono} Sin presupuesto`} onClose={() => {}}>
           <p style={{fontSize:13, color:'var(--text2)', lineHeight:1.6}}>
@@ -224,7 +257,7 @@ export default function NuevoGasto({ onClose }) {
         </Modal>
       )}
 
-      {/* Sub-modal: editar presupuesto desde sin-presupuesto */}
+      {/* Sub-modal: editar presupuesto */}
       {showEditPresup && pendingGasto && (
         <Modal title={`Presupuesto: ${catActual?.icono} ${catActual?.nombre}`} onClose={() => { setShowEditPresup(false); setShowNoCat(true) }}>
           <label>Presupuesto mensual (ARS)</label>
@@ -235,7 +268,7 @@ export default function NuevoGasto({ onClose }) {
             <button className="btn btn-primary" style={{flex:1}} onClick={handleGuardarPresup}>Guardar</button>
           </div>
           {catActual?.presupuesto > 0 && (
-            <button className="btn btn-primary" style={{width:'100%', marginTop:8}} onClick={() => { setShowEditPresup(false); guardarGasto(pendingGasto) }}>
+            <button className="btn btn-primary" style={{width:'100%', marginTop:8}} onClick={() => { setShowEditPresup(false); guardarGastoFinal(pendingGasto) }}>
               Guardar gasto de todas formas
             </button>
           )}
@@ -248,18 +281,15 @@ export default function NuevoGasto({ onClose }) {
           <label>Nombre</label>
           <input value={ncNombre} onChange={e => { setNcNombre(e.target.value); setNcErrors(p=>({...p,nombre:undefined})) }} placeholder="Ej: Transporte" />
           {ncErrors.nombre && <span className="field-error">{ncErrors.nombre}</span>}
-
           <label>Ícono</label>
           <div className={styles.iconGrid}>
             {ICONS.map(ic => (
               <button key={ic} className={`${styles.iconOpt} ${ncIcono === ic ? styles.iconSel : ''}`} onClick={() => setNcIcono(ic)}>{ic}</button>
             ))}
           </div>
-
           <label>Presupuesto mensual (ARS)</label>
           <input type="number" value={ncPresup} onChange={e => { setNcPresup(e.target.value); setNcErrors(p=>({...p,presup:undefined})) }} placeholder="0" min="0" />
           {ncErrors.presup && <span className="field-error">{ncErrors.presup}</span>}
-
           <div style={{display:'flex', gap:8, marginTop:'1.5rem'}}>
             <button className="btn" style={{flex:1}} onClick={() => setShowNewCat(false)}>Cancelar</button>
             <button className="btn btn-primary" style={{flex:1}} onClick={handleCrearCategoria}>Crear</button>
