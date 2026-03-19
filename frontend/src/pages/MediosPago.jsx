@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useStore } from '../store'
-import { createMedio, deleteMedio } from '../api'
+import { createMedio } from '../api'
 import { genId } from '../utils'
 import Modal from '../components/Modal'
 
@@ -9,7 +9,6 @@ export default function MediosPago() {
   const [showNew, setShowNew] = useState(false)
   const [nombre, setNombre] = useState('')
   const [error, setError] = useState('')
-  const [deleting, setDeleting] = useState(null)
 
   const handleCreate = async () => {
     if (!nombre.trim()) { setError('Ingresá un nombre.'); return }
@@ -20,16 +19,6 @@ export default function MediosPago() {
       setNombre(''); setError('')
     } catch {
       setError('Ese medio ya existe.')
-    }
-  }
-
-  const handleDelete = async (id) => {
-    setDeleting(id)
-    try {
-      await deleteMedio(id)
-      await fetchMedios()
-    } finally {
-      setDeleting(null)
     }
   }
 
@@ -53,13 +42,6 @@ export default function MediosPago() {
             }}>
               <span style={{ fontSize: 20 }}>💳</span>
               <span style={{ flex: 1, fontSize: 14 }}>{m.nombre}</span>
-              <button
-                className="btn btn-sm btn-danger"
-                onClick={() => handleDelete(m.id)}
-                disabled={deleting === m.id}
-              >
-                {deleting === m.id ? '…' : 'Eliminar'}
-              </button>
             </div>
           ))}
         </div>
