@@ -30,7 +30,7 @@ export default function NuevoGasto({ onClose, gasto = null }) {
     : ''
   const [montoRaw, setMontoRaw] = useState(montoInicial)
   const [tipo, setTipo] = useState(gasto?.tipo || 'individual')
-  const [sw, setSw] = useState(gasto?.splitwise || false)
+  // const [sw, setSw] = useState(gasto?.splitwise || false)
   const [errors, setErrors] = useState({})
   const [saving, setSaving] = useState(false)
 
@@ -77,7 +77,7 @@ export default function NuevoGasto({ onClose, gasto = null }) {
       moneda,
       monto,
       tipo,
-      splitwise: tipo === 'compartido' ? sw : null
+      // splitwise: tipo === 'compartido' ? sw : null
     }
 
     if (esEdicion) {
@@ -204,12 +204,14 @@ export default function NuevoGasto({ onClose, gasto = null }) {
           <button className={`${styles.opt} ${tipo === 'compartido' ? styles.selected : ''}`} onClick={() => setTipo('compartido')}>Compartido</button>
         </div>
 
+        {/* Splitwise integration — comentado, solo uso personal
         {tipo === 'compartido' && (
           <div className={styles.swRow}>
             <input type="checkbox" id="sw" checked={sw} onChange={e => setSw(e.target.checked)} style={{width:'auto', accentColor:'var(--accent)'}} />
             <label htmlFor="sw" style={{marginTop:0, color:'var(--text)'}}>Ya anotado en Splitwise</label>
           </div>
         )}
+        */}
 
         <div className="row2" style={{marginTop: 12}}>
           <div>

@@ -103,11 +103,13 @@ export default function Gastos() {
                     <span>{medio?.nombre || '—'}</span>
                     <span>·</span>
                     <span className={`badge ${g.tipo === 'compartido' ? 'badge-blue' : 'badge-gray'}`}>{g.tipo}</span>
+                    {/* Splitwise badges — comentado, solo uso personal
                     {g.tipo === 'compartido' && (
                       g.splitwise
                         ? <span className="badge badge-teal">Anotado en SW</span>
                         : <span className="badge badge-coral">No anotado en SW</span>
                     )}
+                    */}
                   </div>
                 </div>
                 <div className={styles.amount}>{fmtMon(g.monto, g.moneda)}</div>
