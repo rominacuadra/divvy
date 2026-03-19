@@ -141,7 +141,7 @@ export default function Gastos() {
           <div className="card" style={{width:340}}>
             <h3 style={{fontSize:15,fontWeight:600,marginBottom:'0.75rem'}}>Eliminar gasto</h3>
             <p style={{fontSize:13,color:'var(--text2)',lineHeight:1.6}}>
-              ¿Estás segura de que querés eliminar <strong style={{color:'var(--text)'}}>{eliminando.descripcion}</strong>? Esta acción no se puede deshacer.
+              Al eliminar <strong style={{color:'var(--text)'}}>{eliminando.descripcion}</strong>, no podrá recuperarse. ¿Continuás?
             </p>
             <div style={{display:'flex',gap:8,marginTop:'1.5rem'}}>
               <button className="btn" style={{flex:1}} onClick={() => setEliminando(null)}>Cancelar</button>
