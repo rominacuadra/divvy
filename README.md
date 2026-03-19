@@ -67,8 +67,9 @@ divvy/
 |       ├── pages/            ← Dashboard, Expenses, Categories, Payment Methods
 |       ├── store.jsx         ← Global state (React Context)
 |       └── utils.js          ← Helpers (formatting, CSV export)
-├── screenshots/              ← App screenshots for README
-│   └── dashboard.png        
+├── docs/
+│   └── screenshots/          ← App screenshots for README
+|   ├── index.html       
 ```
 
 ---
