@@ -2,7 +2,7 @@
 
 Registrá tus gastos, dividí los costos, conservá las amistades 💸
 
-![Dashboard](./screenshots/dashboard.png)
+![Dashboard](./docs/screenshots/dashboard.png)
 
 ---
 
@@ -60,6 +60,9 @@ divvy/
 │       ├── gastos.py
 │       ├── categorias.py
 │       └── medios.py
+├── docs/
+│   └── screenshots/          ← App screenshots para README
+|   ├── index.html
 └── frontend/
 |   └── src/
 |       ├── api/              ← API client (axios)
@@ -67,9 +70,6 @@ divvy/
 |       ├── pages/            ← Dashboard, Expenses, Categories, Payment Methods
 |       ├── store.jsx         ← Global state (React Context)
 |       └── utils.js          ← Helpers (formatting, CSV export)
-├── docs/
-│   └── screenshots/          ← App screenshots para README
-|   ├── index.html
 ```
 
 ---

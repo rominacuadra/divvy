@@ -2,7 +2,7 @@
 
 Track your expenses, split the costs, keep the friendships 💸
 
-![Dashboard](./screenshots/dashboard.png)
+![Dashboard](./docs/screenshots/dashboard.png)
 
 ---
 
@@ -20,7 +20,7 @@ Track your expenses, split the costs, keep the friendships 💸
 
 ## 🗺️ Roadmap
 
-> > Divvy's vision goes beyond personal finance — towards an app where friends, roommates or partners can manage their shared expenses together.
+> Divvy's vision goes beyond personal finance — towards an app where friends, roommates or partners can manage their shared expenses together.
 
 - [ ] Multi-user support with authentication
 - [ ] Shared expense groups (roommates, trips, events)
@@ -60,16 +60,16 @@ divvy/
 │       ├── gastos.py
 │       ├── categorias.py
 │       └── medios.py
+├── docs/
+│   └── screenshots/          ← App screenshots for README
+|   ├── index.html 
 └── frontend/
 |   └── src/
 |       ├── api/              ← API client (axios)
 |       ├── components/       ← Reusable components
 |       ├── pages/            ← Dashboard, Expenses, Categories, Payment Methods
 |       ├── store.jsx         ← Global state (React Context)
-|       └── utils.js          ← Helpers (formatting, CSV export)
-├── docs/
-│   └── screenshots/          ← App screenshots for README
-|   ├── index.html       
+|       └── utils.js          ← Helpers (formatting, CSV export)      
 ```
 
 ---
