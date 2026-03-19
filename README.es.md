@@ -11,7 +11,7 @@ Registrá tus gastos, dividí los costos, conservá las amistades 💸
 
 - 📊 **Dashboard mensual** — presupuesto vs. gastado por categoría con estado visual (verde / naranja / rojo)
 - 💰 **Registro de gastos** — fecha, descripción, categoría, medio de pago y moneda (ARS / USD / EUR)
-- 🤝 **Gastos compartidos** — marcá cualquier gasto como compartido (divide 50/50 automáticamente) con flag de Splitwise
+- 🤝 **Gastos compartidos** — marcá cualquier gasto como compartido (divide 50/50 automáticamente)
 - 🗂️ **Categorías** — creá categorías personalizadas con íconos emoji y presupuestos mensuales
 - 💳 **Medios de pago** — administrá tus tarjetas, billeteras virtuales y efectivo
 - 📥 **Exportar CSV** — descargá reportes mensuales de gastos
@@ -21,7 +21,7 @@ Registrá tus gastos, dividí los costos, conservá las amistades 💸
 
 ## 🗺️ Roadmap
 
-> La visión de Divvy va más allá de las finanzas personales — apunta a ser una alternativa completa a Splitwise.
+> La visión de Divvy va más allá de las finanzas personales — hacia una app donde amigos, compañeros de casa o parejas puedan gestionar sus gastos compartidos juntos.
 
 - [ ] Soporte multi-usuario con autenticación
 - [ ] Grupos de gastos compartidos (roommates, viajes, eventos)

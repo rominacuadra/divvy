@@ -50,7 +50,7 @@ class GastoCreate(BaseModel):
     moneda: str = "ARS"
     monto: float
     tipo: str
-    splitwise: Optional[bool] = None
+    # splitwise: Optional[bool] = None
 
 class GastoUpdate(BaseModel):
     fecha: Optional[date] = None
@@ -60,7 +60,7 @@ class GastoUpdate(BaseModel):
     moneda: Optional[str] = None
     monto: Optional[float] = None
     tipo: Optional[str] = None
-    splitwise: Optional[bool] = None
+    # splitwise: Optional[bool] = None
 
 class GastoOut(BaseModel):
     id: str
@@ -71,7 +71,7 @@ class GastoOut(BaseModel):
     moneda: str
     monto: float
     tipo: str
-    splitwise: Optional[bool]
+    # splitwise: Optional[bool]
     creado_en: datetime
 
     class Config:

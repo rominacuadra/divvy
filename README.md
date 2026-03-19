@@ -11,7 +11,7 @@ Track your expenses, split the costs, keep the friendships 💸
 
 - 📊 **Monthly dashboard** — budget vs. spent per category with color-coded status (green / amber / red)
 - 💰 **Expense tracking** — log expenses with date, description, category, payment method and currency (ARS / USD / EUR)
-- 🤝 **Shared expenses** — mark any expense as shared (auto-splits 50/50) with Splitwise tracking flag
+- 🤝 **Shared expenses** — mark any expense as shared (auto-splits 50/50 automatically)
 - 🗂️ **Categories** — create custom categories with emoji icons and monthly budgets
 - 💳 **Payment methods** — manage your cards, wallets and cash methods
 - 📥 **CSV export** — download monthly expense reports
@@ -21,7 +21,7 @@ Track your expenses, split the costs, keep the friendships 💸
 
 ## 🗺️ Roadmap
 
-> The vision for Divvy goes beyond personal finance — it aims to become a full Splitwise alternative.
+> > Divvy's vision goes beyond personal finance — towards an app where friends, roommates or partners can manage their shared expenses together.
 
 - [ ] Multi-user support with authentication
 - [ ] Shared expense groups (roommates, trips, events)

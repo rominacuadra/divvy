@@ -71,6 +71,7 @@ def upgrade() -> None:
         sa.Column('tipo',          sa.Enum('individual', 'compartido', name='tipo_gasto'),
                   nullable=False,
                   comment='Tipo de gasto: individual o compartido'),
+        # TODO: habilitar cuando se implemente multi-usuario y gastos compartidos entre personas
         sa.Column('splitwise',     sa.Boolean,     nullable=True,
                   comment='True si fue anotado en Splitwise. NULL si es individual.'),
         sa.Column('creado_en',     sa.DateTime,    nullable=False,

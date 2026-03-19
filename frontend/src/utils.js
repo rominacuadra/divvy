@@ -28,12 +28,12 @@ export function getMonthName(month, year) {
 }
 
 export function toCSV(gastos, categorias, medios) {
-  const headers = ['Fecha','Descripción','Categoría','Medio de pago','Tipo','Moneda','Monto','Splitwise']
+  const headers = ['Fecha','Descripción','Categoría','Medio de pago','Tipo','Moneda','Monto'] // TODO: agregar 'Splitwise' cuando se implemente multi-usuario
   const rows = gastos.map(g => {
     const cat = categorias.find(c => c.id === g.categoria_id)
     const med = medios.find(m => m.id === g.medio_pago_id)
-    const sw = g.tipo === 'compartido' ? (g.splitwise ? 'Sí' : 'No') : '—'
-    return [g.fecha, g.descripcion, cat?.nombre || '', med?.nombre || '', g.tipo, g.moneda, g.monto.toFixed(2), sw]
+    // const sw = g.tipo === 'compartido' ? (g.splitwise ? 'Sí' : 'No') : '—'  // TODO: habilitar con multi-usuario
+    return [g.fecha, g.descripcion, cat?.nombre || '', med?.nombre || '', g.tipo, g.moneda, g.monto.toFixed(2)]
   })
   return [headers, ...rows]
     .map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(','))

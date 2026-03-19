@@ -32,5 +32,5 @@ class Gasto(Base):
     moneda       = Column(String(5),   default="ARS")
     monto        = Column(Float,       nullable=False)
     tipo         = Column(String(20),  nullable=False)  # "individual" | "compartido"
-    splitwise    = Column(Boolean,     nullable=True)
+    # splitwise    = Column(Boolean,     nullable=True)
     creado_en    = Column(DateTime,    server_default=func.now())
