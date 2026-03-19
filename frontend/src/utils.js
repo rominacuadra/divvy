@@ -21,8 +21,10 @@ export function fmtMon(n, mon) {
 }
 
 export function getMonthName(month, year) {
-  return new Intl.DateTimeFormat('es-AR', { month: 'long', year: 'numeric' })
+  const mes = new Intl.DateTimeFormat('es-AR', { month: 'long' })
     .format(new Date(year, month - 1, 1))
+  const mesCapitalizado = mes.charAt(0).toUpperCase() + mes.slice(1)
+  return `${mesCapitalizado} ${year}`
 }
 
 export function toCSV(gastos, categorias, medios) {
