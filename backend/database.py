@@ -5,7 +5,7 @@ import os
 
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
-    "mysql+pymysql://root:root@localhost:3306/misgastos"
+    "mysql+pymysql://root:root@localhost:3306/divvy"
 )
 
 # Railway puede dar mysql:// sin el driver — normalizamos

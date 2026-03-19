@@ -99,7 +99,7 @@ cp backend/.env.example backend/.env
 cp frontend/.env.example frontend/.env.local
 
 # Los archivos ya tienen los valores correctos para desarrollo local:
-# backend/.env         → DATABASE_URL=mysql+pymysql://root:root@localhost:3306/misgastos
+# backend/.env         → DATABASE_URL=mysql+pymysql://root:root@localhost:3306/divvy
 # frontend/.env.local  → VITE_API_URL=http://localhost:8000
 
 # 3. Levantar todo
@@ -201,7 +201,7 @@ docker-compose logs -f frontend
 docker-compose restart backend
 
 # Conectarse a la base de datos local
-docker-compose exec db mysql -uroot -proot misgastos
+docker-compose exec db mysql -uroot -proot divvy
 
 # Detener todo
 docker-compose down
