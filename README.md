@@ -60,16 +60,16 @@ divvy/
 │       ├── gastos.py
 │       ├── categorias.py
 │       └── medios.py
+├── docs/
+│   └── screenshots/          ← App screenshots for README
+|   ├── index.html 
 └── frontend/
 |   └── src/
 |       ├── api/              ← API client (axios)
 |       ├── components/       ← Reusable components
 |       ├── pages/            ← Dashboard, Expenses, Categories, Payment Methods
 |       ├── store.jsx         ← Global state (React Context)
-|       └── utils.js          ← Helpers (formatting, CSV export)
-├── docs/
-│   └── screenshots/          ← App screenshots for README
-|   ├── index.html       
+|       └── utils.js          ← Helpers (formatting, CSV export)      
 ```
 
 ---
