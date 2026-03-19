@@ -20,7 +20,7 @@ Track your expenses, split the costs, keep the friendships 💸
 
 ## 🗺️ Roadmap
 
-> > Divvy's vision goes beyond personal finance — towards an app where friends, roommates or partners can manage their shared expenses together.
+> Divvy's vision goes beyond personal finance — towards an app where friends, roommates or partners can manage their shared expenses together.
 
 - [ ] Multi-user support with authentication
 - [ ] Shared expense groups (roommates, trips, events)
