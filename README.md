@@ -3,7 +3,6 @@
 Track your expenses, split the costs, keep the friendships 💸
 
 ![Dashboard](./screenshots/dashboard.png)
-*(screenshot coming soon)*
 
 ---
 

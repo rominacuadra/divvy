@@ -3,7 +3,6 @@
 Registrá tus gastos, dividí los costos, conservá las amistades 💸
 
 ![Dashboard](./screenshots/dashboard.png)
-*(captura próximamente)*
 
 ---
 
