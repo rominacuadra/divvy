@@ -75,9 +75,8 @@ def seed_db():
 
         if db.query(MedioPago).count() == 0:
             logger.info("Cargando medios de pago por defecto...")
-            medios_default = [
-                "TC Visa Santander", "TC Visa Provincia", "TC Master Provincia",
-                "TC Amex Santander", "Mercado Pago", "Efectivo", "Ualá", "Tarjeta de débito"
+            medios_default =  [
+                "Tarjeta de Débito", "Efectivo", "Mercado Pago", "Tarjeta de Crédito"
             ]
             for nombre in medios_default:
                 db.add(MedioPago(id=str(uuid.uuid4()), nombre=nombre))
