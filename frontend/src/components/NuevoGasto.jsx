@@ -23,7 +23,12 @@ export default function NuevoGasto({ onClose, gasto = null }) {
   const [catId, setCatId] = useState(gasto?.categoria_id || '')
   const [medioId, setMedioId] = useState(gasto?.medio_pago_id || '')
   const [moneda, setMoneda] = useState(gasto?.moneda || 'ARS')
-  const [montoRaw, setMontoRaw] = useState(gasto ? String(gasto.monto) : '')
+  // En edición de gasto compartido: el monto guardado es la mitad,
+  // mostramos el total (monto * 2) para que el usuario pueda editar el total original
+  const montoInicial = gasto
+    ? (gasto.tipo === 'compartido' ? String(gasto.monto * 2) : String(gasto.monto))
+    : ''
+  const [montoRaw, setMontoRaw] = useState(montoInicial)
   const [tipo, setTipo] = useState(gasto?.tipo || 'individual')
   const [sw, setSw] = useState(gasto?.splitwise || false)
   const [errors, setErrors] = useState({})
@@ -76,8 +81,8 @@ export default function NuevoGasto({ onClose, gasto = null }) {
     }
 
     if (esEdicion) {
-      // En edición no chequeamos presupuesto ni primera vez
-      await guardarGastoFinal(data)
+      // En edición también dividimos por 2 si es compartido
+      await guardarGastoFinal({ ...data, monto: tipo === 'compartido' ? monto / 2 : monto })
       return
     }
 
@@ -146,8 +151,8 @@ export default function NuevoGasto({ onClose, gasto = null }) {
     setShowNoCat(true)
   }
 
-  // En edición el monto ya es el final (no se divide de nuevo)
-  const montoCalculado = !esEdicion && tipo === 'compartido' && parseFloat(montoRaw) > 0
+  // Muestra la mitad cuando el tipo es compartido, tanto en creación como en edición
+  const montoCalculado = tipo === 'compartido' && parseFloat(montoRaw) > 0
     ? parseFloat(montoRaw) / 2
     : null
 
@@ -214,7 +219,7 @@ export default function NuevoGasto({ onClose, gasto = null }) {
             </select>
           </div>
           <div>
-            <label>{esEdicion ? 'Monto' : 'Monto total'}</label>
+            <label>Monto total</label>
             <input type="number" value={montoRaw} onChange={e => { setMontoRaw(e.target.value); setErrors(p => ({...p, monto: undefined})) }} placeholder="0" min="0" />
             <FieldError msg={errors.monto} />
           </div>
@@ -223,12 +228,6 @@ export default function NuevoGasto({ onClose, gasto = null }) {
         {montoCalculado && (
           <div className={styles.montoReal}>
             Monto a registrar: <strong>{fmtMon(montoCalculado, moneda)} (mitad)</strong>
-          </div>
-        )}
-
-        {esEdicion && (
-          <div style={{fontSize:12, color:'var(--text3)', marginTop:8}}>
-            En edición el monto se guarda tal cual lo ingresás.
           </div>
         )}
 
